@@ -15,7 +15,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => User::where('role', '=', 'User')
+            'data' => User::where('role', '=', 'User')->get()
         ]);
     }
 
