@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
@@ -24,7 +25,7 @@ class ReportController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => Report::where('user_id', '=', $request->user_id)
+            'data' => Report::where('user_id', '=', $request->user_id)->get()
         ]);
     }
 
@@ -53,7 +54,8 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'location' => 'required',
-            'time' => 'required|before_or_equal:date',
+            'time' => 'required|date_format:Y-m-d H:i:s',
+            'report' => 'required',
             'user_id' => 'required|numeric'
         ]);
 
@@ -84,6 +86,7 @@ class ReportController extends Controller
             'title' => $request->title,
             'location' => $request->location,
             'time' => $request->time,
+            'report' => $request->report,
             'picture' => $pictureName,
             'user_id' => $request->user_id
         ]);
@@ -120,7 +123,8 @@ class ReportController extends Controller
             'report_id' => 'required|numeric',
             'title' => 'required',
             'location' => 'required',
-            'time' => 'required|before_or_equal:date'
+            'report' => 'required',
+            'time' => 'required|date_format:Y-m-d H:i:s'
         ]);
 
         if ($validator->fails()) {
@@ -152,6 +156,7 @@ class ReportController extends Controller
             $report->update([
                 'title' => $request->title,
                 'location' => $request->location,
+                'report' => $request->report,
                 'time' => $request->time
             ]);
         } else {
@@ -159,6 +164,7 @@ class ReportController extends Controller
                 'title' => $request->title,
                 'location' => $request->location,
                 'time' => $request->time,
+                'report' => $request->report,
                 'picture' => $pictureName
             ]);
         }

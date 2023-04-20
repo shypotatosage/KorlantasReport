@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->string('ktp')->unique();
             $table->string('phone')->unique();
-            $table->text('profile_picture');
+            $table->text('profile_picture')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->text('password');
             $table->enum('role', ['Admin', 'User'])->default('User');

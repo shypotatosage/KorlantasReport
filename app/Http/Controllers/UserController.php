@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -36,7 +39,7 @@ class UserController extends Controller
             'username' => 'required',
             'name' => 'required',
             'email' => 'required|email',
-            'date_of_birth' => 'required|before:date',
+            'date_of_birth' => 'required|date',
             'ktp' => 'required|numeric',
             'phone' => 'required|numeric',
             'password' => 'required'
@@ -49,15 +52,44 @@ class UserController extends Controller
             ]);
         }
 
-        User::create([
-            'username' => $request->username,
-            'name' => $request->name,
-            'email' => $request->email,
-            'date_of_birth' => $request->date_of_birth,
-            'ktp' => $request->ktp,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password)
-        ]);
+        try {
+            User::create([
+                'username' => $request->username,
+                'name' => $request->name,
+                'email' => $request->email,
+                'date_of_birth' => $request->date_of_birth,
+                'ktp' => $request->ktp,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password)
+            ]);
+        } catch (QueryException $err) {
+            if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_username_unique')) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Username sudah digunakan.'
+                ]);
+            } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_email_unique')) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Email sudah digunakan.'
+                ]);
+            } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_ktp_unique')) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'No KTP sudah digunakan.'
+                ]);
+            } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_phone_unique')) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'No HP sudah digunakan.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.'
+                ]);
+            }
+        }
 
         return response()->json([
             'status' => 200,
@@ -86,7 +118,7 @@ class UserController extends Controller
 
         $user = User::where("username", "=", $request->username)->first();
 
-        $token = $user->createToken($request->username, ['user'])->plainTextToken;
+        $token = $user->createToken($request->username, [$user->role])->plainTextToken;
 
         if (!(User::where("username", "=", $request->username)->exists())) {
             return response()->json([
@@ -148,16 +180,17 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'date_of_birth' => 'required|before:date',
+            'date_of_birth' => 'required|date',
             'ktp' => 'required|numeric',
             'phone' => 'required|numeric',
             'user_id' => 'required|numeric',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.'
+                'message' => 'Gagal memperbarui akun, terdapat kesalahan pada data Anda.'
             ]);
         }
 
@@ -171,12 +204,20 @@ class UserController extends Controller
             ]);
         }
 
-        $user->update([
-            'name' => $request->name,
-            'date_of_birth' => $request->date_of_birth,
-            'ktp' => $request->ktp,
-            'phone' => $request->phone,
-        ]);
+        if (Hash::check($request->password, $user->password)) {
+            $user->update([
+                'name' => $request->name,
+                'date_of_birth' => $request->date_of_birth,
+                'ktp' => $request->ktp,
+                'phone' => $request->phone,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Password Anda salah',
+                'data' => ''
+            ]);
+        }
 
         return response()->json([
             'status' => 200,
