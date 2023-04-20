@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ReportResource;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,7 @@ class ReportController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => Report::all()
+            'data' => ReportResource::collection(Report::all())
         ]);
     }
     
@@ -25,7 +26,7 @@ class ReportController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => Report::where('user_id', '=', $request->user_id)->get()
+            'data' => ReportResource::collection(Report::where('user_id', '=', $request->user_id)->get())
         ]);
     }
 
@@ -34,7 +35,7 @@ class ReportController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => Report::findOrFail($request->report_id)->first()
+            'data' => new ReportResource(Report::findOrFail($request->report_id)->first())
         ]);
     }
 
