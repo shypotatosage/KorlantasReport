@@ -205,12 +205,22 @@ class UserController extends Controller
         }
 
         if (Hash::check($request->password, $user->password)) {
-            $user->update([
-                'name' => $request->name,
-                'date_of_birth' => $request->date_of_birth,
-                'ktp' => $request->ktp,
-                'phone' => $request->phone,
-            ]);
+            if ($request->file('profile_picture')) {
+                $imageName = $user->id . "." . ($request->file('profile_picture'))->getClientOriginalExtension();
+
+                if(File::exists("images/profile_picture/" . $imageName)) {
+                    File::delete("images/profile_picture/" . $imageName);
+                }
+
+                $image->move(public_path('images/profile_picture'), $imageName);
+            } else {
+                $user->update([
+                    'name' => $request->name,
+                    'date_of_birth' => $request->date_of_birth,
+                    'ktp' => $request->ktp,
+                    'phone' => $request->phone,
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => 500,
