@@ -48,7 +48,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.'
+                'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.',
+                'data' => ''
             ]);
         }
 
@@ -66,27 +67,32 @@ class UserController extends Controller
             if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_username_unique')) {
                 return response()->json([
                     'status' => 500,
-                    'message' => 'Username sudah digunakan.'
+                    'message' => 'Username sudah digunakan.',
+                    'data' => ''
                 ]);
             } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_email_unique')) {
                 return response()->json([
                     'status' => 500,
-                    'message' => 'Email sudah digunakan.'
+                    'message' => 'Email sudah digunakan.',
+                    'data' => ''
                 ]);
             } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_ktp_unique')) {
                 return response()->json([
                     'status' => 500,
-                    'message' => 'No KTP sudah digunakan.'
+                    'message' => 'No KTP sudah digunakan.',
+                    'data' => ''
                 ]);
             } else if (str_contains($err->getMessage(), '1062 Duplicate') && str_contains($err->getMessage(), 'users_phone_unique')) {
                 return response()->json([
                     'status' => 500,
-                    'message' => 'No HP sudah digunakan.'
+                    'message' => 'No HP sudah digunakan.',
+                    'data' => ''
                 ]);
             } else {
                 return response()->json([
                     'status' => 500,
-                    'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.'
+                    'message' => 'Gagal membuat akun, terdapat kesalahan pada data Anda.',
+                    'data' => ''
                 ]);
             }
         }
@@ -132,12 +138,12 @@ class UserController extends Controller
             ]);
         } else {
             $token = $user->createToken($request->username, [$user->role])->plainTextToken;
-            
+
             if (Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'status' => 200,
                     'message' => 'Berhasil masuk ke akun.',
-                    'user' => [
+                    'data' => [
                         'token' => $token,
                         'user_id' => $user->id,
                         'role' => $user->role
