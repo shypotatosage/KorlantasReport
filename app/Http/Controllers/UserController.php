@@ -118,8 +118,6 @@ class UserController extends Controller
 
         $user = User::where("username", "=", $request->username)->first();
 
-        $token = $user->createToken($request->username, [$user->role])->plainTextToken;
-
         if (!(User::where("username", "=", $request->username)->exists())) {
             return response()->json([
                 'status' => 500,
@@ -133,6 +131,8 @@ class UserController extends Controller
                 'data' => ''
             ]);
         } else {
+            $token = $user->createToken($request->username, [$user->role])->plainTextToken;
+            
             if (Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'status' => 200,
@@ -206,13 +206,22 @@ class UserController extends Controller
 
         if (Hash::check($request->password, $user->password)) {
             if ($request->file('profile_picture')) {
-                $imageName = $user->id . "." . ($request->file('profile_picture'))->getClientOriginalExtension();
+                $image = $request->file('profile_picture');
+                $imageName = $user->id . "." . $image->getClientOriginalExtension();
 
                 if(File::exists("images/profile_picture/" . $imageName)) {
                     File::delete("images/profile_picture/" . $imageName);
                 }
 
                 $image->move(public_path('images/profile_picture'), $imageName);
+
+                $user->update([
+                    'name' => $request->name,
+                    'date_of_birth' => $request->date_of_birth,
+                    'ktp' => $request->ktp,
+                    'phone' => $request->phone,
+                    'profile_picture' => $imageName
+                ]);
             } else {
                 $user->update([
                     'name' => $request->name,
