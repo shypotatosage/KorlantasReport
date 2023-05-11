@@ -13,7 +13,7 @@ class Report extends Model
         'title',
         'location',
         'time',
-        'report',
+        'description',
         'picture',
         'status',
         'user_id',

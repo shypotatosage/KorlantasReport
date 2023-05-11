@@ -56,7 +56,7 @@ class ReportController extends Controller
             'title' => 'required',
             'location' => 'required',
             'time' => 'required|date_format:Y-m-d H:i:s',
-            'report' => 'required',
+            'description' => 'required',
             'user_id' => 'required|numeric'
         ]);
 
@@ -87,7 +87,7 @@ class ReportController extends Controller
             'title' => $request->title,
             'location' => $request->location,
             'time' => $request->time,
-            'report' => $request->report,
+            'description' => $request->report,
             'picture' => $pictureName,
             'user_id' => $request->user_id
         ]);
@@ -124,7 +124,7 @@ class ReportController extends Controller
             'report_id' => 'required|numeric',
             'title' => 'required',
             'location' => 'required',
-            'report' => 'required',
+            'description' => 'required',
             'time' => 'required|date_format:Y-m-d H:i:s'
         ]);
 
@@ -157,7 +157,7 @@ class ReportController extends Controller
             $report->update([
                 'title' => $request->title,
                 'location' => $request->location,
-                'report' => $request->report,
+                'description' => $request->report,
                 'time' => $request->time
             ]);
         } else {
@@ -165,7 +165,7 @@ class ReportController extends Controller
                 'title' => $request->title,
                 'location' => $request->location,
                 'time' => $request->time,
-                'report' => $request->report,
+                'description' => $request->report,
                 'picture' => $pictureName
             ]);
         }
