@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
 {
@@ -18,7 +19,7 @@ class ReportController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         //
     }
@@ -28,7 +29,36 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'location' => 'required',
+            'time' => 'required|date_format:Y-m-d H:i:s',
+            'description' => 'required',
+            'user_id' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Laporan gagal dikirim, terdapat kesalahan pada data Anda.',
+                'data' => ''
+            ]);
+        }
+
+        Report::create([
+            'title' => $request->title,
+            'location' => $request->location,
+            'time' => $request->time,
+            'description' => $request->report,
+            'picture' => $request->file('picture')->store('public/report'),
+            'user_id' => $request->user_id
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'data' => ''
+        ]);
     }
 
     /**
