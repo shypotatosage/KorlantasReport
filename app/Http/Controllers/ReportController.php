@@ -34,6 +34,7 @@ class ReportController extends Controller
             'location' => 'required',
             'time' => 'required|date_format:Y-m-d H:i:s',
             'description' => 'required',
+            'picture' => 'nullable|image|mimes:jpeg,jpg,png',
             'user_id' => 'required|numeric'
         ]);
 
@@ -45,14 +46,24 @@ class ReportController extends Controller
             ]);
         }
 
-        Report::create([
-            'title' => $request->title,
-            'location' => $request->location,
-            'time' => $request->time,
-            'description' => $request->report,
-            'picture' => $request->file('picture')->store('public/report'),
-            'user_id' => $request->user_id
-        ]);
+        if ($request->hasFile('picture')) {
+            Report::create([
+                'title' => $request->title,
+                'location' => $request->location,
+                'time' => $request->time,
+                'description' => $request->description,
+                'picture' => $request->file('picture')->store('public/report'),
+                'user_id' => $request->user_id
+            ]);
+        } else {
+            Report::create([
+                'title' => $request->title,
+                'location' => $request->location,
+                'time' => $request->time,
+                'description' => $request->description,
+                'user_id' => $request->user_id
+            ]);
+        }
 
         return response()->json([
             'status' => 200,
