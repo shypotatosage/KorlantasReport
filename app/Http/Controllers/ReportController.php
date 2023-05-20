@@ -32,7 +32,7 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'location' => 'required',
-            'date' => 'required|date_format:Y-m-d H:i:s',
+            'date' => 'required|date_format:Y-m-d',
             'description' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,jpg,png',
             'user_id' => 'required|numeric'
