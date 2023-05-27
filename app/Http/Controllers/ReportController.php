@@ -34,7 +34,6 @@ class ReportController extends Controller
             'location' => 'required',
             'time' => 'required|date_format:Y-m-d H:i:s',
             'description' => 'required',
-            'picture' => 'nullable|image|mimes:jpeg,jpg,png',
             'user_id' => 'required|numeric'
         ]);
 
