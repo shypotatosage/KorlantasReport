@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('location');
-            $table->date('date');
+            $table->dateTime('time');
             $table->string('description', 500);
             $table->text('picture')->nullable();
             $table->enum('status', ['Menunggu Konfirmasi', 'Diproses', 'Selesai'])->default('Menunggu Konfirmasi');

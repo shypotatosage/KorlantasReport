@@ -32,7 +32,7 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'location' => 'required',
-            'date' => 'required|date_format:Y-m-d',
+            'time' => 'required|date_format:Y-m-d H:i:s',
             'description' => 'required',
             'picture' => 'nullable|image|mimes:jpeg,jpg,png',
             'user_id' => 'required|numeric'
@@ -50,7 +50,7 @@ class ReportController extends Controller
             Report::create([
                 'title' => $request->title,
                 'location' => $request->location,
-                'date' => $request->date,
+                'time' => $request->date,
                 'description' => $request->description,
                 'picture' => $request->file('picture')->store('public/report'),
                 'user_id' => $request->user_id
@@ -59,12 +59,12 @@ class ReportController extends Controller
             Report::create([
                 'title' => $request->title,
                 'location' => $request->location,
-                'date' => $request->date,
+                'time' => $request->date,
                 'description' => $request->description,
                 'user_id' => $request->user_id
             ]);
         }
-
+        
         return response()->json([
             'status' => 200,
             'message' => 'success',
