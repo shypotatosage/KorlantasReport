@@ -70,12 +70,6 @@ class ReportController extends Controller
 
         $pictureName = null;
 
-        // $id = 1;
-
-        // if (DB::table('reports')->latest('created_at')->first() != null) {
-        //     $id = DB::table('reports')->latest('created_at')->first()->id + 1;
-        // }
-
         if ($request->hasFile('picture')) {
             $pic = $request->file('picture');
             $pictureName = date('mdYHis') . uniqid() . "." . $pic->getClientOriginalExtension();
@@ -178,7 +172,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Memproses Report
+     * Processing the report
      */
     public function processReport(Request $request)
     {
