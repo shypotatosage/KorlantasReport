@@ -53,11 +53,11 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => '',
-            'location' => '',
-            'time' => '',
-            'description' => '',
-            'user_id' => ''
+            'title' => 'required',
+            'location' => 'required',
+            'time' => 'required|date_format:Y-m-d H:i:s',
+            'description' => 'required',
+            'user_id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +88,7 @@ class ReportController extends Controller
             'location' => $request->location,
             'time' => $request->time,
             'description' => $request->description,
-            'picture' => $pictureName,
+            'picture' => $request->picture,
             'user_id' => $request->user_id
         ]);
 
