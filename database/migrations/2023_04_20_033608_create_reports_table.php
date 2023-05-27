@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('location');
             $table->dateTime('time');
-            $table->string('report');
+            $table->string('description');
             $table->text('picture')->nullable();
             $table->enum('status', ['Menunggu Konfirmasi', 'Diproses', 'Selesai'])->default('Menunggu Konfirmasi');
             $table->foreignIdFor(User::class);

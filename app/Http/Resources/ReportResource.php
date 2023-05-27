@@ -19,7 +19,7 @@ class ReportResource extends JsonResource
             'title' => $this->title,
             'location' => $this->location,
             'time' => $this->time,
-            'report' => $this->report,
+            'description' => $this->description,
             'picture' => $this->picture,
             'status' => $this->status,
             'user' => User::findOrFail($this->user_id)->first(),
