@@ -49,7 +49,7 @@ class ReportController extends Controller
             Report::create([
                 'title' => $request->title,
                 'location' => $request->location,
-                'time' => $request->date,
+                'time' => $request->time,
                 'description' => $request->description,
                 'picture' => $request->file('picture')->store('public/report'),
                 'user_id' => $request->user_id
@@ -58,7 +58,7 @@ class ReportController extends Controller
             Report::create([
                 'title' => $request->title,
                 'location' => $request->location,
-                'time' => $request->date,
+                'time' => $request->time,
                 'description' => $request->description,
                 'user_id' => $request->user_id
             ]);
