@@ -12,7 +12,7 @@ class Report extends Model
     protected $fillable = [
         'title',
         'location',
-        'time',
+        'datetime',
         'description',
         'picture',
         'status',
